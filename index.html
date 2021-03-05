@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Akronymisierbar</title>
+
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style name="variables">
+      :root {
+        --main-color-bright: #30404b;
+        --main-color-bright-lighter: #5e6f7a;
+
+        --heading-color-bright: var(--main-color-bright);
+        --background-color-bright: #fff;
+
+        --heading-color-dark: #fff;
+        --background-color-dark: #25323a;
+
+        --code-color-dark: #d33682;
+        --code-color-bright: #97d336;
+
+        --link-color: #268bd2;
+        --link-hover: #78b9e6;
+
+        --selection-color: #fff;
+        --selection-background: #d33682;
+
+        --controls-color: #268bd2;
+        --roll-background: #1a6091;
+
+        --font-family-title: "Vollkorn", serif;
+        --font-family-content: "Lato", sans-serif;
+        --font-family-code: "Ubuntu Mono", monospace;
+      }
+    </style>
+
+    <style name="debugging">
+      /* debug stuff * 
+      main > :nth-child(even) {
+        background-color: #ddd;
+        outline: 1px dashed red;
+      }
+      main > :nth-child(odd) {
+        background-color: #eee;
+        outline: 1px dashed blue;
+      }
+      main > aside > section {
+        background-color: white;
+      }
+
+      /* debug stuff */
+    </style>
+
+    <style name="layout">
+      main {
+        margin: 0 auto;
+        height: 100vh;
+      }
+
+      /** <grid stuff> */
+      main {
+        display: grid;
+        column-gap: 1em;
+      }
+
+      @media screen and (max-width: 600px) {
+        /* smaller screen */
+        main {
+          xbackground-color: lightgreen !important;
+          grid-template-rows: auto auto auto 1fr auto;
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "navbar"
+            "sidebar"
+            "header"
+            "content"
+            "footer";
+        }
+        img.logo {
+          width: 50%;
+        }
+      }
+
+      @media screen and (min-width: 600px) {
+        img.logo {
+          width: 80%;
+        }
+      }
+
+      @media screen and (min-width: 600px) and (max-width: 850px) {
+        /* small screen */
+        main {
+          xbackground-color: salmon !important;
+          grid-template-columns: minmax(250px, 35%) auto;
+          grid-template-rows: auto auto 1fr auto;
+          grid-template-areas:
+            "sidebar navbar"
+            "sidebar header"
+            "sidebar content"
+            "sidebar footer";
+        }
+
+        main > aside {
+          place-items: start start;
+        }
+        main > aside > section {
+          /* background-color: sandybrown; */
+          place-self: start center;
+          place-items: center center;
+          height: 20vh;
+        }
+      }
+
+      @media screen and (min-width: 850px) {
+        /* large screen */
+        main {
+          grid-template-columns: minmax(250px, 35%) auto;
+          grid-template-rows: auto auto 1fr auto;
+          grid-template-areas:
+            "sidebar navbar"
+            "sidebar header"
+            "sidebar content"
+            "sidebar footer";
+        }
+        main > section#content {
+          overflow-y: scroll;
+        }
+        img.logo {
+          width: 80%;
+        }
+        #content article p {
+          max-width: 80%;
+        }
+      }
+
+      main > aside {
+        grid-area: sidebar;
+      }
+
+      main > nav {
+        grid-area: navbar;
+      }
+
+      main > header {
+        grid-area: header;
+      }
+
+      main > section#content {
+        grid-area: content;
+      }
+
+      main > footer {
+        grid-area: footer;
+      }
+      /** </grid stuff> */
+
+      main > aside {
+        place-items: center center;
+        display: grid;
+      }
+
+      main > aside > section {
+        display: grid;
+        place-items: center center;
+        height: 50vh;
+      }
+    </style>
+
+    <style name="typography and style">
+      body {
+        background: var(--background-color-bright);
+        color: var(--main-color-bright);
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+        margin: 0;
+      }
+      a {
+        color: var(--code-color-dark);
+        text-decoration: none;
+      }
+
+      main > aside {
+        padding: 5px 10px;
+        font-size: 2em;
+      }
+
+      main aside img.logo {
+        place-self: center center;
+      }
+
+      main > :is(nav, footer) {
+        padding: 15px 10px;
+      }
+
+      main > :is(header, section#content) {
+        padding: 5px 10px;
+      }
+
+      #content article.latest {
+        padding-bottom: 1em;
+        font-size: 1.4em;
+        display: grid;
+        grid-template-columns: minmax(2em, 3em) auto;
+      }
+
+      #content article.latest div.playbutton {
+        place-self: start center;
+        margin: 2em;
+
+      }
+
+      #content article p {
+        padding-bottom: 1em;
+        max-width: 90%;
+      }
+
+      #content article {
+        margin-bottom: 2em;
+        padding-bottom: 2em;
+        border-bottom: 0.5px solid lightgray;
+      }
+
+      #content article footer {
+        color: var(--main-color-bright-lighter);
+      }
+
+      span.playbutton {
+        font-size: 0.9em;
+        color: white;
+        background: black;
+        margin: 3em 1em;
+        padding: 0.5em 0.7em;
+        height: 1em;
+        border-radius: 2em;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <aside>
+        <section>
+          <img
+            src="./akronymisierbild.png"
+            alt="akronymisierbild"
+            srcset=""
+            class="logo"
+          />
+          <hr />
+          <p>
+            <a href="https://twitter.com/akronymisierbar/">
+              <i class="fab fa-twitter"></i> </a
+            >&nbsp;
+            <a href="https://twitter.com/akronymisierbar/">
+              <i class="fab fa-instagram"></i> </a
+            >&nbsp;
+            <a href="https://github.com/akronymisierbar/">
+              <i class="fab fa-github"></i> </a
+            >&nbsp;
+            <a href="https://matrix.to/#/#akronymisierbar:matrix.org">
+              <i class="fab fa-slack"></i>
+            </a>
+          </p>
+        </section>
+      </aside>
+
+      <nav>
+        <a href="#">Home</a>
+        <a href="#">Archiv</a>
+        <a href="#">Disclamer</a>
+      </nav>
+
+      <header>
+        <hgroup>
+          <h1>Episoden</h1>
+          <h3>Akronymisierbar</h3>
+        </hgroup>
+      </header>
+
+      <section id="content">
+        <article class="latest">
+          <div class="playbutton">
+          <span class="playbutton">▶</span>
+          </div>
+          <div>
+            <h3>047 - Open Source ist ein Spektrum</h3>
+
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+              veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+              accusamus tenetur sunt provident cupiditate excepturi explicabo,
+              dicta quis saepe veniam ipsa.
+            </p>
+
+            <footer>February 21st, 2021 | 02:29:18 | E47</footer>
+          </div>
+        </article>
+
+        <article>
+          <h3>046 - Quarantäneheld*innen</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>January 10th, 2021 | 01:42:32 | E46</footer>
+        </article>
+
+        <article>
+          <h3>Holiday Special - Online Konferenzen 2020</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>December 30th, 2020 | 02:46:08 | E45</footer>
+        </article>
+
+        <article>
+          <h3>044 - Comfortnoise</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>043 - Enterprise Go Beans</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+        <article>
+          <h3>042 - Die 42</h3>
+        </article>
+
+        <article>
+          <h3>041 - Oh nein meine Fische sind tot</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>040 - Communitymaske</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>039 - HomeOfficeEdition</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>043 - Enterprise Go Beans</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+        <article>
+          <h3>042 - Die 42</h3>
+        </article>
+
+        <article>
+          <h3>041 - Oh nein meine Fische sind tot</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>040 - Communitymaske</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>039 - HomeOfficeEdition</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>043 - Enterprise Go Beans</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+        <article>
+          <h3>042 - Die 42</h3>
+        </article>
+
+        <article>
+          <h3>041 - Oh nein meine Fische sind tot</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>040 - Communitymaske</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+
+        <article>
+          <h3>039 - HomeOfficeEdition</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
+            veritatis id? Laboriosam voluptas cum minus, fuga neque quos
+            accusamus tenetur sunt provident cupiditate excepturi explicabo,
+            dicta quis saepe veniam ipsa.
+          </p>
+          <footer>November 22nd, 2020 | 01:29:31 | E44</footer>
+        </article>
+      </section>
+
+      <footer>made by kilian & hendrik</footer>
+    </main>
+  </body>
+</html>
